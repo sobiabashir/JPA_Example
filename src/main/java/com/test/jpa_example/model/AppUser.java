@@ -3,10 +3,12 @@ package com.test.jpa_example.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
-@Setter
+
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
@@ -15,28 +17,34 @@ import java.time.LocalDateTime;
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int appUserId;
-
-    @Column(nullable = false, length = 100, unique = true)
-    private String userName;
+    private int id;
 
     @Column(nullable = false, unique = true)
-    private String _password;
+    @Setter
+    private String username;
+
+    @Column(nullable = false)
+    @Setter
+    private String password;
 
     @Column
-    private LocalDateTime registrationDate;
+    @Setter
+    private LocalDate regDate;
 
-    @OneToOne
-    @JoinColumn(name = "detail_id")
-    private Details details;
+    @Setter
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "details_id")
+    private Details userDetails;
 
-    public void setPassword(String password) {
-        this._password = password;
-    }
+    // @OneToMany(mappedBy = "borrower")
+    @OneToMany(mappedBy = "appUsers")
+    @JoinColumn(name = "app_user_id")
+    private List<BookLoan> bookLoans;
 
+    public AppUser(String username, String password) {
+        this.username = username;
+        this.password = password;
+        this.regDate = LocalDate.now();
 
-    public AppUser(String userName, String password) {
-        this.userName = userName;
-        this._password = password;
     }
 }

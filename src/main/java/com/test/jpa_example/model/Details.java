@@ -2,6 +2,8 @@ package com.test.jpa_example.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,19 +16,20 @@ import java.time.LocalDateTime;
 public class Details {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int detailId;
+    private int id;
 
-    @Column(nullable = false, length = 100)
-    private String name;
+    @Column(nullable = false,length = 100)
+    @Setter private String name;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @Column(nullable = false,length = 100, unique = true)
+    @Setter private String email;
 
     @Column
-    private LocalDateTime birthDate;
+    @Setter private LocalDate birthdate;
 
-    public Details(String name, String email) {
+    public Details(String name, String email, LocalDate birthdate) {
         this.name = name;
         this.email = email;
+        this.birthdate = birthdate;
     }
 }
