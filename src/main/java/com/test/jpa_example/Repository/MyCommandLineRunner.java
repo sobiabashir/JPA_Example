@@ -49,6 +49,12 @@ public class MyCommandLineRunner implements CommandLineRunner {
         bookRepository.save(book1);
         bookRepository.save(book2);
         bookRepository.save(book3);
+        BookLoan bookLoan1 = new BookLoan(date, date.plusDays(10), false, appUser1);
+        BookLoan bookLoan2 = new BookLoan(date, date.plusDays(10), false, appUser1);
+        BookLoan bookLoan3 = new BookLoan(date, date.plusDays(10), false, appUser2);
+        bookLoanRepository.save(bookLoan1);
+        bookLoanRepository.save(bookLoan2);
+        bookLoanRepository.save(bookLoan3);
 
 
     }

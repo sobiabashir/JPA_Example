@@ -4,6 +4,7 @@ package com.test.jpa_example.Repository;
 
 import com.test.jpa_example.model.AppUser;
 import com.test.jpa_example.model.Details;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,82 +17,84 @@ import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-
 public class AppUserRepositoryTest {
-@Autowired
+
+    @Autowired
     AppUserRepository appUserRepository;
 
-@Autowired
+    @Autowired
     detailsRepository detailsRepository;
 
-
-@Test
-//@Transactional
-public void testSave() {
-    LocalDate date = LocalDate.now();
-    Details details = new Details("Jane Doe", "jane.doe@example.com",  date );
-    detailsRepository.save(details);
-
-    AppUser appUser = new AppUser("sobia", "123456");
-
-    appUser.setRegDate( LocalDate .now());
-    appUser.setUserDetails(details);
-
-    AppUser savedAppUser = appUserRepository.save(appUser);
-    Assertions.assertNotNull(savedAppUser);
-   // Assertions.assertNotNull(savedAppUser.getId());
-}
-
+    @Transactional
     @Test
-    public void testFindById() {
-        LocalDate date = LocalDate.now();
-        Details details = new Details("Jane Doe", "jane.doe@example.com",date);
-        detailsRepository.save(details);
+    public void testSaveAndFindAppUserByUserName() {
+        //1. Arrange
+        Details userDetails = new Details("Test Testson","test@test.se", LocalDate.now());
+        AppUser appUser = new AppUser("testuser","IAmAT3ster");
 
-        AppUser appUser = new AppUser("sobia", "123456");
-        appUser.setRegDate(LocalDate.now());
-        appUser.setUserDetails(details);
+        //2. Act
+        AppUser savedUser = appUserRepository.save(appUser);
 
-        AppUser savedAppUser = appUserRepository.save(appUser);
-        int appUserId = savedAppUser.getId();
-        Assertions.assertNotNull(appUserId);
 
-       
-        Optional<AppUser> retrievedAppUserOptional = appUserRepository.findById(appUserId);
-        Assertions.assertTrue(retrievedAppUserOptional.isPresent());
+        //3. Assert
+        Assertions.assertNotNull(savedUser);
+        Assertions.assertNotNull(savedUser.getId());
+        Assertions.assertEquals(appUser,appUserRepository.findAppUserByUsername("testuser"));
+    }
 
-        AppUser retrievedAppUser = retrievedAppUserOptional.get();
-        Assertions.assertEquals(savedAppUser.getId(), retrievedAppUser.getId());
-        Assertions.assertEquals(savedAppUser.getUsername(), retrievedAppUser.getUsername());
-        Assertions.assertEquals(savedAppUser.getPassword(), retrievedAppUser.getPassword());
-        Assertions.assertEquals(savedAppUser.getRegDate(), retrievedAppUser.getRegDate());
-        Assertions.assertEquals(savedAppUser.getUserDetails().getName(), retrievedAppUser.getUserDetails().getName());
-        Assertions.assertEquals(savedAppUser.getUserDetails().getEmail(), retrievedAppUser.getUserDetails().getEmail());
+    @Transactional
+    @Test
+    public void testFindAppUserByRegDateBetween() {
+        //1. Arrange
+        Details userDetails = new Details("Test Testson","test@test.se", LocalDate.now());
+        AppUser appUser = new AppUser("testuser","IAmAT3ster");
+        AppUser appUserTwo = new AppUser("testusertwo","IAmAlsoAT3ster");
+
+        //2. Act
+        AppUser savedUser = appUserRepository.save(appUser);
+        AppUser savedUserTwo = appUserRepository.save(appUserTwo);
+        List<AppUser> resultList = appUserRepository.findAppUserByRegDateBetween(LocalDate.parse("2024-05-01"),LocalDate.parse("2024-05-31"));
+
+
+        //3. Assert
+        Assertions.assertTrue(resultList.contains(appUser));
+        Assertions.assertTrue(resultList.contains(appUserTwo));
 
     }
 
+    @Transactional
     @Test
-    public void testFindDetailsByNameContainingIgnoreCase() {
-        // Save some details entities
-       LocalDate date = LocalDate.now();
-        Details details1 = new Details("Jane Doe", "jane.doe@example.com",date);
-        Details details2 = new Details("John Smith", "john.smith@example.com",date);
-        Details details3 = new Details("janet Roe", "janet.roe@example.com",date);
-        detailsRepository.save(details1);
-        detailsRepository.save(details2);
-        detailsRepository.save(details3);
+    public void testFindAppUserByUserDetails_Id() {
+        // 1. Arrange
+        Details userDetails = new Details("Test Testson","test@test.se", LocalDate.now());
+        AppUser appUser = new AppUser("testuser","IAmAT3ster");
+        appUser.setUserDetails(userDetails);
 
-        // Test findByNameContainingIgnoreCase
-        List<Details> foundDetails = detailsRepository.findByNameContainingIgnoreCase("jane");
-        Assertions.assertEquals(2, foundDetails.size());
-        Assertions.assertTrue(foundDetails.stream().anyMatch(details -> details.getName().equals("Jane Doe")));
-        Assertions.assertTrue(foundDetails.stream().anyMatch(details -> details.getName().equals("janet Roe")));
+        //2. Act
+        AppUser savedUser = appUserRepository.save(appUser);
+        Details savedDetails = detailsRepository.save(userDetails);
+        int detailsID = userDetails.getId();
 
-        foundDetails = detailsRepository.findByNameContainingIgnoreCase("SMITH");
-        Assertions.assertEquals(1, foundDetails.size());
-        Assertions.assertEquals("John Smith", foundDetails.get(0).getName());
+        //3. Assert
+        Assertions.assertEquals(appUser,appUserRepository.findAppUserByUserDetails_Id(detailsID));
     }
 
+    @Transactional
+    @Test
+    public void testFindAppUserByUserEmail() {
+        // 1. Arrange
+        Details userDetails = new Details("Test Testson","test@test.se", LocalDate.now());
+        AppUser appUser = new AppUser("testuser","IAmAT3ster");
+        appUser.setUserDetails(userDetails);
+
+        //2. Act
+        AppUser savedUser = appUserRepository.save(appUser);
+        Details savedDetails = detailsRepository.save (userDetails);
+        String userEmail = userDetails.getEmail();
+
+        //3. Assert
+        Assertions.assertEquals(appUser,appUserRepository.findAppUserByUserDetails_EmailIgnoreCase(userEmail));
+
+    }
 
 }

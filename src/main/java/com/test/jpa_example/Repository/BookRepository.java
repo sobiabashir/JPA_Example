@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface BookRepository extends JpaRepository<Book, Integer> {
-    Book findBookByIsbnIgnoreCase(String ISBN);
+public interface BookRepository extends JpaRepository<Book,String> {
+    Book findBookByIsbnIgnoreCase(String isbn);
     Book findBookByTitleContains(String title);
     List<Book> findBooksByMaxLoanDaysLessThan(int days);
 
@@ -24,5 +24,5 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     List<Book> findOverdueBooks();
 
     @Query("select b from Book b join BookLoan l where l.loanDate between :date1 and :date2")
-    List<Book> findBooksByLoansBetween(@Param("date1") LocalDate date1, @Param("date2") LocalDate date2);
+    List<Book> findBooksByLoansBetween(@Param("date1") LocalDate date1,@Param("date2") LocalDate date2);
 }

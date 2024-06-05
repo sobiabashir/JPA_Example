@@ -8,13 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-
-public interface detailsRepository extends JpaRepository<Details, Integer> {
-    // Basic CRUD operations are inherited from JpaRepository
-
-    Optional<Details> findByEmail(String email);
-
-    List<Details> findByNameContains(String name);
-
-    List<Details> findByNameContainingIgnoreCase(String name);
+public interface detailsRepository extends JpaRepository<Details,String> {
+    Details findDetailsByEmail(String email);
+    Details findDetailsByNameContains(String name);
+    Details findDetailsByNameIgnoreCase(String name);
 }

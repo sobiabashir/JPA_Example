@@ -5,40 +5,36 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Getter
-
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
+
 @Entity
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(nullable = false, unique = true)
-    @Setter
-    private String username;
+    @Column(nullable = false,unique = true)
+    @Setter private String username;
 
     @Column(nullable = false)
-    @Setter
-    private String password;
+    @Setter private String password;
 
     @Column
-    @Setter
-    private LocalDate regDate;
+    @Setter private LocalDate regDate;
 
     @Setter
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "details_id")
     private Details userDetails;
 
-    // @OneToMany(mappedBy = "borrower")
-    @OneToMany(mappedBy = "appUsers")
-    @JoinColumn(name = "app_user_id")
+    @OneToMany(mappedBy = "borrower")
     private List<BookLoan> bookLoans;
 
     public AppUser(String username, String password) {

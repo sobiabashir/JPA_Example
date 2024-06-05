@@ -6,11 +6,11 @@ import lombok.*;
 import java.util.List;
 
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
+
 @Entity
 public class Book {
 

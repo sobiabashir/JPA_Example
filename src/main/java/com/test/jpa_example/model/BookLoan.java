@@ -7,11 +7,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
 @ToString
+
 @Entity
 public class BookLoan {
 
@@ -28,21 +28,19 @@ public class BookLoan {
     @Column
     @Setter private boolean returned;
 
-    @ManyToOne
-    @JoinColumn(name = "AppUser_id")
-    private AppUser borrower;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "appUser_id")
+    @Setter private AppUser borrower;
 
-    @ManyToOne
-    @JoinColumn(name = "Book_id")
-    private Book book;
-    @ManyToOne(optional = false)
-    private AppUser appUsers;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "book_id")
+    @Setter private Book book;
 
-    public AppUser getAppUsers() {
-        return appUsers;
-    }
+    public BookLoan(LocalDate loanDate, LocalDate dueDate, boolean returned, AppUser borrower) {
+        this.loanDate = loanDate;
+        this.dueDate = dueDate;
+        this.returned = returned;
+        this.borrower = borrower;
 
-    public void setAppUsers(AppUser appUsers) {
-        this.appUsers = appUsers;
     }
 }
