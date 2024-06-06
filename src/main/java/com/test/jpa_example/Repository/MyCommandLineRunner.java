@@ -1,9 +1,7 @@
 package com.test.jpa_example.Repository;
 
-import com.test.jpa_example.model.AppUser;
-import com.test.jpa_example.model.Book;
-import com.test.jpa_example.model.BookLoan;
-import com.test.jpa_example.model.Details;
+import com.test.jpa_example.model.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -26,8 +24,11 @@ public class MyCommandLineRunner implements CommandLineRunner {
 
     @Autowired
     BookLoanRepository bookLoanRepository;
+    @Autowired
+    AuthorRepository authorRepository;
 
     @Override
+    @Transactional
     public void run(String... args) throws Exception {
         LocalDate date = LocalDate.now();
         Details details = new Details("Jane Doe", "jane.doe@example.com",date);
@@ -55,6 +56,26 @@ public class MyCommandLineRunner implements CommandLineRunner {
         bookLoanRepository.save(bookLoan1);
         bookLoanRepository.save(bookLoan2);
         bookLoanRepository.save(bookLoan3);
+
+       Author author1 = new Author("sobjia","sdsds");
+
+       Author author2 = new Author("test", "testson");
+
+        authorRepository.save(author1);
+        authorRepository.save(author2);
+
+        // Retrieve authors from the database
+        System.out.println("Authors found by first name:");
+        authorRepository.findByFirstName("sobia").forEach(System.out::println);
+
+        System.out.println("Authors found by last name:");
+        authorRepository.findByLastName("asim").forEach(System.out::println);
+
+        // Update an author's name
+       // authorRepository.updateAuthorNameById(1, "updatedFirstName", "updatedLastName");
+
+        // Delete an author by ID
+       // authorRepository.deleteById(1);
 
 
     }

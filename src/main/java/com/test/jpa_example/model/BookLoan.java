@@ -29,7 +29,7 @@ public class BookLoan {
     @Setter private boolean returned;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "appUser_id")
+    @JoinColumn(name = "app_user_id")
     @Setter private AppUser borrower;
 
     @ManyToOne(cascade = CascadeType.PERSIST)

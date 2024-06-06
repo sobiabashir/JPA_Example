@@ -32,4 +32,9 @@ public class Details {
         this.email = email;
         this.birthdate = birthdate;
     }
+
+    @OneToOne(mappedBy = "userDetails", optional = false)
+    private AppUser appUser;
+
+
 }
